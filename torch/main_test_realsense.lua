@@ -46,15 +46,15 @@ batch_iterator:setBatchSize(1)
 local test_count = 0
 
 while batch_iterator.epoch==0 and test_count<#batch_iterator.test.data do
-	local batch = batch_iterator:nextBatchRealsense('test', config)
-	local currName = batch_iterator:currentName('test')
+    local batch = batch_iterator:nextBatchRealsense('test', config)
+    local currName = batch_iterator:currentName('test')
     print(currName)
-	local k = split(currName, "/")
+    local k = split(currName, "/")
     saveName = k[#k-1] .. "_" .. k[#k]
-	print(string.format("Testing %s", saveName))
-	
+    print(string.format("Testing %s", saveName))
+    
 
-	local inputs = batch.pr_color
+    local inputs = batch.pr_color
     inputs = inputs:contiguous():cuda()
     local outputs = model:forward(inputs)
 
@@ -67,12 +67,12 @@ while batch_iterator.epoch==0 and test_count<#batch_iterator.test.data do
     normal_est = normal_est:view(-1, ch)
     local normalize_layer = nn.Normalize(2):cuda()
     normal_outputs = normalize_layer:forward(normal_est)
-	normal_outputs = normal_outputs:view(1, h, w, ch)
-	normal_outputs = normal_outputs:permute(1, 4, 2, 3):contiguous()
-	normal_outputs = normal_outputs:view( ch, h, w)
-	normal_outputs = normal_outputs:float()
+    normal_outputs = normal_outputs:view(1, h, w, ch)
+    normal_outputs = normal_outputs:permute(1, 4, 2, 3):contiguous()
+    normal_outputs = normal_outputs:view( ch, h, w)
+    normal_outputs = normal_outputs:float()
 
-	-- image.save(string.format("%s%s_normal_est.png", config.result_path, saveName), normal_outputs:add(1):mul(0.5))
+    -- image.save(string.format("%s%s_normal_est.png", config.result_path, saveName), normal_outputs:add(1):mul(0.5))
     myfile = hdf5.open(string.format("%s%s_normal_est.h5", config.result_path, saveName),'w')
     myfile:write('/result', normal_outputs:float())
     myfile:close()
@@ -82,5 +82,3 @@ while batch_iterator.epoch==0 and test_count<#batch_iterator.test.data do
 end
 
 print("Finish!")
-
-
