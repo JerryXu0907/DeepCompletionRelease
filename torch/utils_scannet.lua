@@ -7,7 +7,7 @@ function loadRealsense(file_name, root_path)
     local data = {}
 
     baseline = root_path .. line
-    data.color = baseline .. '_color.png'
+    data.color = baseline .. '.jpg'
     data.depth = baseline .. '_depth.png'
 
     data.name = baseline
